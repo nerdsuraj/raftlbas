@@ -1,36 +1,49 @@
-import { Request, Response, NextFunction } from 'express';
-import { User } from '../models/userModel';
+import bcrypt from 'bcryptjs';
+import { User } from '../models/userModel.js';
+import { Restaurant } from '../models/Restaurant.js';
+import { generateToken } from '../utils/auth.js';
 
-const userCtrl = {
-  addUser: async (req: any, res: any, next: any) => {
-    try {
-        let reqBody = JSON.parse(JSON.stringify(req.body));
-        console.log("🚀 ~ addUser: ~ reqBody:", reqBody)
-
-      if (!reqBody.email || !reqBody.password) {
-        return res.status(400).json({ message: 'email, and password are required' });
+export const Resolvers = {
+  Query: {
+    studentList: async () => {
+      return await User.find();
+    },
+    restaurantList: async () => {
+      try {
+        const restaurants = await Restaurant.find();
+        return restaurants.map((restaurant:any) => ({
+          id: restaurant._id.toString(),
+          name: restaurant.name,
+          borough: restaurant.borough,
+          cuisine: restaurant.cuisine,
+          address: restaurant.address,
+          grades: restaurant.grades.map((grade:any) => ({
+            date: grade.date,
+            grade: grade.grade,
+            score: grade.score !== null && grade.score !== undefined ? grade.score : 0, // Provide a default value for missing scores
+          })),
+          restaurant_id: restaurant.restaurant_id,
+        }));
+      } catch (error) {
+        console.error("Error fetching restaurant list:", error);
+        throw new Error("Unable to fetch restaurant list");
       }
+    },
+  },
+  Mutation: {
+    register: async (_: any, { username, email, password }: any) => {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = new User({ username, email, password: hashedPassword });
+      return await user.save();
+    },
+    login: async (_: any, { username, password }: any) => {
+      const user = await User.findOne({ username });
+      if (!user) throw new Error('User not found');
 
-      const existingUser = await User.findOne({ email: reqBody.email });
-      console.log("🚀 ~ addUser: ~ existingUser:", existingUser)
-      if (existingUser) {
-        return res.status(409).json({ message: 'Email is already in use' });
-      }
+      const valid = await bcrypt.compare(password, user.password);
+      if (!valid) throw new Error('Incorrect password');
 
-      const user = new User({ email: reqBody.email, password: reqBody.password });
-      let saveuser = await user.save();
-      console.log("🚀 ~ addUser: ~ saveuser:", saveuser)
-      if(saveuser){
-        res.status(201).json({ message: 'User created successfully', user });
-      }else{
-        res.status(500).json({ message: 'something went wrong while addind the user!' });
-      }
-
-    } catch (error) {
-      console.error("Error in addUser:", error);
-      res.status(500).json({ message: 'Internal server error' });
-    }
-  }
+      return generateToken(user.id); // Return JWT token
+    },
+  },
 };
-
-export default userCtrl;
