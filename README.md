@@ -39,3 +39,15 @@ GraphQL Playground: Access at http://localhost:4000/graphql.
 
 WebSocket Communication: Use Socket.IO to connect and communicate with the server.
 
+## Postman Collection
+
+5. **Postman API Collection**:
+   - A Postman API collection has been included in this project to simplify testing and demonstrate all available endpoints.
+   - You can find the collection file at `postman_collection.json` in the root directory of the project.
+   - **To use the Postman collection**:
+     1. Open Postman.
+     2. Click on **Import** in the top left.
+     3. Select the `postman_collection.json` file from the project directory.
+     4. The collection will appear in your Postman under **Collections**, where you can test each API endpoint with the correct request format and headers.
+
+Make sure to update or regenerate the collection in Postman if you add new endpoints, ensuring all routes are up to date in the `postman_collection.json`.

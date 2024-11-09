@@ -1,0 +1,106 @@
+{
+    "info": {
+      "name": "GraphQL API Collection",
+      "description": "Postman collection for testing the GraphQL API with JWT Authentication and WebSocket configuration.",
+      "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+      {
+        "name": "User Registration",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"query\":\"mutation {\\n  register(username: \\\"suraj\\\", email: \\\"suraj@gmail.com\\\", password: \\\"Surajkumar\\\") {\\n    id\\n    username\\n    email\\n  }\\n}\\n\",\"variables\":{}}"
+          },
+          "url": {
+            "raw": "http://localhost:4000/graphql",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["graphql"]
+          },
+          "description": "Register a new user with username, email, and password."
+        }
+      },
+      {
+        "name": "User Login",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"query\":\"mutation {\\n  login(username: \\\"suraj\\\", password: \\\"Surajkumar\\\")\\n}\\n\",\"variables\":{}}"
+          },
+          "url": {
+            "raw": "http://localhost:4000/graphql",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["graphql"]
+          },
+          "description": "Authenticate a user and receive a JWT token."
+        }
+      },
+      {
+        "name": "Restaurant List Query",
+        "request": {
+          "method": "POST",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "key": "Authorization",
+              "value": "Bearer {{JWT_TOKEN}}"
+            }
+          ],
+          "body": {
+            "mode": "raw",
+            "raw": "{\"query\":\"query {\\n  restaurantList {\\n    id\\n    name\\n    borough\\n    cuisine\\n    address {\\n      building\\n      street\\n      coord\\n      zipcode\\n    }\\n    grades {\\n      date\\n      grade\\n      score\\n    }\\n    restaurant_id\\n  }\\n}\\n\",\"variables\":{}}"
+          },
+          "url": {
+            "raw": "http://localhost:4000/graphql",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["graphql"]
+          },
+          "description": "Retrieve a list of restaurants. Requires a valid JWT token in the Authorization header."
+        }
+      },
+      {
+        "name": "WebSocket Settings",
+        "request": {
+          "method": "GET",
+          "header": [
+            {
+              "key": "auth",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NzJmMTFhNjY3NmYzOGY4MTIyZWZjNGIiLCJpYXQiOjE3MzExMzgwMjksImV4cCI6MTczMTE0MTYyOX0.ACR5j1nb_tmrSWYU3m6qBZPsd67him2jbR-SsFTZfPI"
+            }
+          ],
+          "url": {
+            "raw": "http://localhost:4000/socket.io",
+            "protocol": "http",
+            "host": ["localhost"],
+            "port": "4000",
+            "path": ["socket.io"]
+          },
+          "description": "WebSocket settings for client-server communication. Replace the JWT token in the `auth` header with a valid token."
+        }
+      }
+    ]
+  }
+  
