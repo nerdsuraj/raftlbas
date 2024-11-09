@@ -12,8 +12,8 @@ This project is a GraphQL API built with Node.js and Express, using TypeScript f
    npm install
 
    
-DATABASE_URL=your_database_url_here
-JWT_SECRET=your_jwt_secret_key_here
+DATABASE_URL=mongodb+srv://soorajkrpandit:5Kqq6vdWIm5LizAY@cluster0.venxf.mongodb.net/sample_restaurants?retryWrites=true&w=majority&appName=Cluster0
+JWT_SECRET=suraj
 PORT=4000
 
 npm start
